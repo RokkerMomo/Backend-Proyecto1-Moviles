@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
+const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 //inicio
 const app = (0, express_1.default)();
 // settings
@@ -18,4 +19,5 @@ app.use(express_1.default.json());
 app.get('/', (req, res) => {
     return res.send(`La API esta en http://localhost:${app.get('port')}`);
 });
+app.use(auth_routes_1.default);
 exports.default = app;
