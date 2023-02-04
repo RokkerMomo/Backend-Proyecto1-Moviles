@@ -16,42 +16,42 @@ exports.signIn = exports.signUp = void 0;
 const user_1 = __importDefault(require("../models/user"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config/config"));
+//FUNCION PARA CREAR TOKEN
 function createToken(user) {
-    return jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, config_1.default.jwtSecret, {
+    return jsonwebtoken_1.default.sign({ id: user.id, usuario: user.usuario }, config_1.default.jwtSecret, {
         expiresIn: 86400
     });
 }
+//REGISTRO
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.body.email || !req.body.password) {
-        return res.status(400).json({ msg: 'Asegurese de ingresar el corre y la contraseña' });
+    if (!req.body.usuario || !req.body.password) {
+        return res.status(400).json({ msg: 'Asegurese de ingresar el usuario y la contraseña' });
     }
-    const user = yield user_1.default.findOne({ email: req.body.email });
+    const user = yield user_1.default.findOne({ usuario: req.body.usuario });
     if (user) {
-        return res.status(400).json({ msg: 'El Correo que ingreso ya existe' });
+        return res.status(400).json({ msg: 'El Usuario que ingreso ya existe' });
     }
+    //GUARDAR USUARIO
     const newUser = new user_1.default(req.body);
     yield newUser.save();
     return res.status(201).json(newUser);
 });
 exports.signUp = signUp;
+//LOGIN
 const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.body.email || !req.body.password) {
-        return res
-            .status(400)
-            .json({ msg: "Asegurese de ingresar el email y la contraseña" });
+    if (!req.body.usuario || !req.body.password) {
+        return res.status(400).json({ msg: "Asegurese de ingresar el usuario y la contraseña" });
     }
-    console.log(req.body);
-    const user = yield user_1.default.findOne({ email: req.body.email });
-    console.log(user);
+    const user = yield user_1.default.findOne({ usuario: req.body.usuario });
     if (!user) {
         return res.status(400).json({ msg: "El usuario no existe" });
     }
     const isMatch = yield user.comparePassword(req.body.password);
-    if (isMatch) {
-        return res.status(400).json({ token: createToken(user) });
+    if (!isMatch) {
+        //DEVOLVER RESPUETA
+        return res.status(400).json({ msg: "El correo o la contraseña son incorrectos" });
     }
-    return res.status(400).json({
-        msg: "The email or password are incorrect"
-    });
+    //DEVOLVER TOKEN
+    return res.status(200).json({ token: createToken(user) });
 });
 exports.signIn = signIn;

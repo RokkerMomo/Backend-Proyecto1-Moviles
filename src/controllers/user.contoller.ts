@@ -1,49 +1,51 @@
 import { Request, Response } from "express"
-import User, {IUser} from "../models/user"
+import usuarios, {IUser} from "../models/user"
 import jwt from 'jsonwebtoken'
 import config from "../config/config";
 
+
+//FUNCION PARA CREAR TOKEN
 function createToken(user: IUser){
-return jwt.sign({id:user.id, email:user.email},config.jwtSecret,{
+return jwt.sign({id:user.id, usuario:user.usuario},config.jwtSecret,{
     expiresIn:86400
 });
 }
 
+
+//REGISTRO
 export const signUp = async (req: Request,res: Response): Promise<Response> =>{
-    if (!req.body.email || !req.body.password){
-        return res.status(400).json({msg:'Asegurese de ingresar el corre y la contraseña'})
+    if (!req.body.usuario || !req.body.password){
+        return res.status(400).json({msg:'Asegurese de ingresar el usuario y la contraseña'})
     }
-    const user = await User.findOne({email:req.body.email});
+    const user = await usuarios.findOne({usuario:req.body.usuario});
     if(user){
-        return res.status(400).json({msg:'El Correo que ingreso ya existe'});
+        return res.status(400).json({msg:'El Usuario que ingreso ya existe'});
     }
-    const newUser = new User(req.body);
+    //GUARDAR USUARIO
+    const newUser = new usuarios(req.body);
     await newUser.save();
     return res.status(201).json(newUser);
 }
 
-export const signIn = async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
-    if (!req.body.email || !req.body.password) {
-      return res
-        .status(400)
-        .json({ msg: "Asegurese de ingresar el email y la contraseña" });
+
+//LOGIN
+export const signIn = async (req: Request,res: Response): Promise<Response> => {
+    if (!req.body.usuario || !req.body.password) {
+      return res.status(400).json({ msg: "Asegurese de ingresar el usuario y la contraseña" });
     }
-    console.log(req.body)
-    const user = await User.findOne({email:req.body.email});
-    console.log(user)
+    const user = await usuarios.findOne({usuario:req.body.usuario});
     if (!user) {
+
       return res.status(400).json({ msg: "El usuario no existe" });
     }
   
     const isMatch = await user.comparePassword(req.body.password);
-    if (isMatch) {
-      return res.status(400).json({ token: createToken(user) });
+    if (!isMatch) {
+     //DEVOLVER RESPUETA
+      return res.status(400).json({msg: "El correo o la contraseña son incorrectos"});
     }
-  
-    return res.status(400).json({
-      msg: "The email or password are incorrect"
-    });
+     //DEVOLVER TOKEN
+    return res.status(200).json({token:createToken(user)});
+    
+   
   };

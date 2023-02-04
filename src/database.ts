@@ -6,7 +6,7 @@ mongoose.connect(config.DB.URI);
 const conection = mongoose.connection;
 
 conection.once('open',()=>{
-    console.log('Conecxion Exisota con la base de datos');
+    console.log('Conecxion Exitosa con la base de datos');
 
 });
 

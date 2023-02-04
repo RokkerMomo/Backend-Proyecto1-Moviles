@@ -1,15 +1,32 @@
 import { Model, Schema, Document, model } from "mongoose";
 import bcrypt from 'bcrypt'
+
+//INTERFACE
 export interface IUser extends Document {
-    email:string,
+    nombre:string,
+    apellido:string,
+    usuario:string,
     password:string,
     comparePassword:(p: object) => Response
 
     
 }
 
+//EL ESQUEMA DE USUARIO
 const UserSchema = new Schema ({
-    email:{
+    nombre:{
+        type:String,
+        unique:false,
+        required:true,
+        trim:true
+    },
+    apellido:{
+        type:String,
+        unique:false,
+        required:true,
+        trim:true
+    },
+    usuario:{
         type:String,
         unique:true,
         required:true,
@@ -21,10 +38,13 @@ const UserSchema = new Schema ({
     },
 });
 
+
+
+
 UserSchema.pre<IUser>('save', async function(next){
     const user = this;
     if (!user.isModified('password')) return next();
-
+    //ENCRIPTAR CONTRASEÑA
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(user.password,salt);
     user.password = hash;
@@ -32,11 +52,11 @@ UserSchema.pre<IUser>('save', async function(next){
 
 })
 
-UserSchema.methods.comparePassword = async function(
-    password: string
-  ): Promise<Boolean> {
+
+//COMPARAR CONTRASEÑAS ENCRIPTADAS
+UserSchema.methods.comparePassword = async function(password: string): Promise<Boolean> {
     return await bcrypt.compare(password, this.password);
   };
 
 
-export default model<IUser>('User', UserSchema);
+export default model<IUser>('usuarios', UserSchema);
