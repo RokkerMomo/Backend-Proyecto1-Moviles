@@ -12,6 +12,7 @@ return jwt.sign({id:user.id, usuario:user.usuario},config.jwtSecret,{
 }
 
 
+
 //REGISTRO
 export const signUp = async (req: Request,res: Response): Promise<Response> =>{
     if (!req.body.usuario || !req.body.password){
@@ -45,7 +46,8 @@ export const signIn = async (req: Request,res: Response): Promise<Response> => {
       return res.status(400).json({msg: "El correo o la contraseña son incorrectos"});
     }
      //DEVOLVER TOKEN
-    return res.status(200).json({token:createToken(user)});
+     const usuario = req.body.usuario;
+    return res.status(200).json({usuario});
     
    
   };

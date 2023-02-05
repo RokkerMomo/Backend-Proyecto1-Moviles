@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.showDetails = exports.showNotes = exports.newNote = void 0;
+exports.deleteNote = exports.editContent = exports.showDetails = exports.showNotes = exports.newNote = void 0;
 const notas_1 = __importDefault(require("../models/notas"));
 //Crear Nota
 const newNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -23,7 +23,7 @@ const newNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.newNote = newNote;
 const showNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const notas = yield notas_1.default.find({});
+    const notas = yield notas_1.default.find({ owner: req.body.owner });
     console.log(notas);
     return res.status(201).json(notas);
 });
@@ -37,3 +37,19 @@ const showDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     return res.status(201).json(nota);
 });
 exports.showDetails = showDetails;
+const editContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const notas = yield notas_1.default.updateOne({ _id: req.body._id }, { titulo: req.body.titulo, descripcion: req.body.descripcion });
+    console.log(notas);
+    return res.status(201).json({ msg: "Guardado con exito" });
+});
+exports.editContent = editContent;
+const deleteNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const nota = yield notas_1.default.findOne({ _id: req.body._id });
+    if (!nota) {
+        return res.status(400).json({ msg: 'La nota que busco no existe' });
+    }
+    const notas = yield notas_1.default.deleteOne({ _id: req.body._id });
+    console.log(notas);
+    return res.status(201).json({ msg: "Nota eliminada con exito" });
+});
+exports.deleteNote = deleteNote;
