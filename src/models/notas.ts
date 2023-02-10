@@ -6,6 +6,8 @@ export interface Notes extends Document {
     titulo:string,
     descripcion:string,
     fecha:string,
+    carpeta:string,
+    
 }
 
 
@@ -35,6 +37,12 @@ const NotesSchema = new Schema ({
         required:true,
         trim:true,
 
+    },
+    carpeta:{
+        type:String,
+        unique:false,
+        required:false,
+        trim:true,
     }
 });
 

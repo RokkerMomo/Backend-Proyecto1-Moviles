@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteNote = exports.editContent = exports.showDetails = exports.showNotes = exports.newNote = void 0;
+exports.shownotesinacollection = exports.AddtoColecction = exports.deleteNote = exports.editContent = exports.showDetails = exports.showNotes = exports.newNote = void 0;
 const notas_1 = __importDefault(require("../models/notas"));
+const carpetas_1 = __importDefault(require("../models/carpetas"));
 //Crear Nota
 const newNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //GUARDAR Nota
@@ -24,6 +25,9 @@ const newNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.newNote = newNote;
 const showNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const notas = yield notas_1.default.find({ owner: req.body.owner });
+    if (!notas) {
+        return res.status(400).json({ msg: "el usuario no tiene notas" });
+    }
     console.log(notas);
     return res.status(201).json(notas);
 });
@@ -39,6 +43,9 @@ const showDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.showDetails = showDetails;
 const editContent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const notas = yield notas_1.default.updateOne({ _id: req.body._id }, { titulo: req.body.titulo, descripcion: req.body.descripcion });
+    if (!notas) {
+        return res.status(400).json({ msg: "Error al intentar guardar la nota (nota no encontrada)" });
+    }
     console.log(notas);
     return res.status(201).json({ msg: "Guardado con exito" });
 });
@@ -53,3 +60,21 @@ const deleteNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     return res.status(201).json({ msg: "Nota eliminada con exito" });
 });
 exports.deleteNote = deleteNote;
+const AddtoColecction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const carpeta = yield carpetas_1.default.findOne({ nombre: req.body.nombrecarpeta });
+    if (!carpeta) {
+        return res.status(400).json({ msg: "la carpeta que ingreso no existe" });
+    }
+    yield notas_1.default.updateOne({ _id: req.body.idnota }, { carpeta: req.body.nombrecarpeta });
+    return res.status(201).json({ msg: "nota agregada con exito" });
+});
+exports.AddtoColecction = AddtoColecction;
+const shownotesinacollection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const notas = yield notas_1.default.find({ carpeta: req.body.carpeta });
+    if (!notas) {
+        return res.status(400).json({ msg: "La carpeta que busco no existe" });
+    }
+    console.log(notas);
+    return res.status(201).json(notas);
+});
+exports.shownotesinacollection = shownotesinacollection;

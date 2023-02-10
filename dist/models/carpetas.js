@@ -11,41 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 //EL ESQUEMA DE USUARIO
-const NotesSchema = new mongoose_1.Schema({
+const CarpetaSchema = new mongoose_1.Schema({
     owner: {
         type: String,
         unique: false,
         required: true,
         trim: true
     },
-    titulo: {
+    nombre: {
         type: String,
         unique: false,
         required: true,
         trim: true
     },
-    descripcion: {
-        type: String,
-        unique: false,
-        required: false,
-        trim: true
-    },
-    fecha: {
-        type: String,
-        unique: false,
-        required: true,
-        trim: true,
-    },
-    carpeta: {
-        type: String,
-        unique: false,
-        required: false,
-        trim: true,
-    }
 });
-NotesSchema.pre('save', function (next) {
+CarpetaSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         next();
     });
 });
-exports.default = (0, mongoose_1.model)('Notas', NotesSchema);
+exports.default = (0, mongoose_1.model)('Carpetas', CarpetaSchema);
