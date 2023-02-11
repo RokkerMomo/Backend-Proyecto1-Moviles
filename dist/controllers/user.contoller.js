@@ -53,7 +53,8 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(400).json({ msg: "El correo o la contraseña son incorrectos" });
     }
     //DEVOLVER TOKEN
-    return res.status(200).json({ user });
+    //  user.push({token:createToken(user)})
+    return res.status(201).json({ user, token: createToken(user) });
 });
 exports.signIn = signIn;
 const FindUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -45,13 +45,17 @@ export const signIn = async (req: Request,res: Response): Promise<Response> => {
       return res.status(400).json({msg: "El correo o la contraseña son incorrectos"});
     }
      //DEVOLVER TOKEN
-    return res.status(200).json({user});
+    //  user.push({token:createToken(user)})
+    
+    return res.status(201).json({ user,token: createToken(user) });
     
    
   };
 
+
+
   export const FindUser = async (req: Request,res: Response): Promise<Response> => {
-    const user = await usuarios.findOne({_id:req.body._id});
+    const user:any = await usuarios.findOne({_id:req.body._id});
     console.log(req.body)
     if (!user) {
       return res.status(400).json({ msg: "El usuario no existe" });
