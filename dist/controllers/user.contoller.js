@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.FindUser = exports.signIn = exports.signUp = void 0;
+exports.editpassword = exports.edituser = exports.deleteUser = exports.FindUser = exports.signIn = exports.signUp = void 0;
 const user_1 = __importDefault(require("../models/user"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config/config"));
 const notas_1 = __importDefault(require("../models/notas"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 //FUNCION PARA CREAR TOKEN
 function createToken(user) {
     return jsonwebtoken_1.default.sign({ id: user.id, usuario: user.usuario }, config_1.default.jwtSecret, {
@@ -76,3 +77,33 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     return res.status(201).json({ msg: "Cuenta eliminada con exito" });
 });
 exports.deleteUser = deleteUser;
+const edituser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_1.default.updateOne({ _id: req.body._id }, { nombre: req.body.nombre, apellido: req.body.apellido, usuario: req.body.usuario });
+    if (!user) {
+        return res.status(400).json({ msg: "Error al intentar editar perfil" });
+    }
+    return res.status(201).json({ msg: "Guardado con exito" });
+});
+exports.edituser = edituser;
+const editpassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body.actual || !req.body.nueva) {
+        return res.status(400).json({ msg: "Asegurese de ingresar los campos" });
+    }
+    const user = yield user_1.default.findOne({ _id: req.body._id });
+    if (!user) {
+        return res.status(400).json({ msg: "El usuario no existe" });
+    }
+    const isMatch = yield user.comparePassword(req.body.actual);
+    if (!isMatch) {
+        //DEVOLVER RESPUETA
+        return res.status(400).json({ msg: "La contraseña actual no coincide" });
+    }
+    if (req.body.actual == req.body.nueva) {
+        return res.status(400).json({ msg: "la contraseña nueva no puede ser igual que la actual" });
+    }
+    const salt = yield bcrypt_1.default.genSalt(10);
+    const hash = yield bcrypt_1.default.hash(req.body.nueva, salt);
+    const pass = yield user_1.default.updateOne({ _id: req.body._id }, { password: hash });
+    return res.status(201).json({ msg: "Cambio realizado con exito" });
+});
+exports.editpassword = editpassword;

@@ -3,7 +3,7 @@ import usuarios, {IUser} from "../models/user"
 import jwt from 'jsonwebtoken'
 import config from "../config/config";
 import Notas, { Notes } from "../models/notas";
-
+import bcrypt from 'bcrypt'
 //FUNCION PARA CREAR TOKEN
 function createToken(user: IUser){
 return jwt.sign({id:user.id, usuario:user.usuario},config.jwtSecret,{
@@ -74,4 +74,48 @@ export const signIn = async (req: Request,res: Response): Promise<Response> => {
     await Notas.deleteMany({owner:req.body._id});
     return res.status(201).json({msg:"Cuenta eliminada con exito"});
 
+}
+
+
+export const edituser = async (req:Request, res: Response): Promise<Response>=>{
+  const user = await usuarios.updateOne({_id:req.body._id},{nombre:req.body.nombre, apellido:req.body.apellido, usuario:req.body.usuario});
+  if (!user) {
+      return res.status(400).json({msg:"Error al intentar editar perfil"});
+  }
+
+  return res.status(201).json({msg:"Guardado con exito"});
+}
+
+
+export const editpassword = async (req:Request, res: Response): Promise<Response>=>{
+
+  if (!req.body.actual || !req.body.nueva) {
+    return res.status(400).json({ msg: "Asegurese de ingresar los campos" });
+  }
+
+  const user = await usuarios.findOne({_id:req.body._id});
+  if (!user) {
+
+    return res.status(400).json({ msg: "El usuario no existe" });
+  }
+
+  const isMatch = await user.comparePassword(req.body.actual);
+  if (!isMatch) {
+   //DEVOLVER RESPUETA
+    return res.status(400).json({msg: "La contraseña actual no coincide"});
+  }
+
+  if (req.body.actual==req.body.nueva) {
+    return res.status(400).json({msg: "la contraseña nueva no puede ser igual que la actual"})
+  }
+  
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(req.body.nueva,salt);
+
+  const pass = await usuarios.updateOne({_id:req.body._id},{password:hash});
+
+
+  
+
+  return res.status(201).json({msg:"Cambio realizado con exito"});
 }

@@ -14,6 +14,8 @@ router.post('/signup', user_contoller_1.signUp);
 router.post('/signin', user_contoller_1.signIn);
 router.post('/finduser', passport_1.default.authenticate('jwt', { session: false }), user_contoller_1.FindUser);
 router.post('/deleteuser', passport_1.default.authenticate('jwt', { session: false }), user_contoller_1.deleteUser);
+router.post('/edituser', passport_1.default.authenticate('jwt', { session: false }), user_contoller_1.edituser);
+router.post('/editpass', passport_1.default.authenticate('jwt', { session: false }), user_contoller_1.editpassword);
 //enpoints para notes
 router.post('/newnote', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.newNote);
 router.post('/shownotes', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.showNotes);
