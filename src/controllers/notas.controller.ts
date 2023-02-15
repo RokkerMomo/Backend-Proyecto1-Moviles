@@ -58,7 +58,7 @@ export const deleteNote = async (req: Request, res: Response): Promise<Response>
 }
 
 
-export const AddtoColecction = async (req: Request,res: Response): Promise<Response> =>{
+export const AddtoCarpeta = async (req: Request,res: Response): Promise<Response> =>{
     const carpeta = await Carpetas.findOne({nombre:req.body.nombrecarpeta})
     
     if (!carpeta) {
@@ -69,7 +69,7 @@ export const AddtoColecction = async (req: Request,res: Response): Promise<Respo
     
 }
 
-export const shownotesinacollection = async (req: Request, res: Response): Promise<Response>=>{
+export const shownotesinaCarpeta = async (req: Request, res: Response): Promise<Response>=>{
     
     const notas = await Notas.find({carpeta:req.body.carpeta});
     if (!notas) {

@@ -14,7 +14,7 @@ export const newCarpeta = async (req: Request,res: Response): Promise<Response> 
     return res.status(201).json(newcarpet);
 }
 
-export const showcolecction = async (req: Request, res:Response): Promise<Response> =>{
+export const showCarpeta = async (req: Request, res:Response): Promise<Response> =>{
     const carpetas = await Carpetas.find({owner:req.body.owner})
     if (!carpetas) {
         return res.status(400).json({msg:"el usuario no existe"})
@@ -23,7 +23,7 @@ export const showcolecction = async (req: Request, res:Response): Promise<Respon
     return res.status(201).json(carpetas)
 }
 
-export const deletecollection = async (req: Request, res: Response): Promise<Response> =>{
+export const deleteCarpeta = async (req: Request, res: Response): Promise<Response> =>{
     const carpeta = await Carpetas.findOne({nombre:req.body.nombre})
     if (!carpeta) {
         return res.status(400).json({msg:"la carpeta que busco no existe"})
