@@ -14,7 +14,7 @@ export const newCarpeta = async (req: Request,res: Response): Promise<Response> 
     return res.status(201).json(newcarpet);
 }
 
-export const showCarpeta = async (req: Request, res:Response): Promise<Response> =>{
+export const showCarpetas = async (req: Request, res:Response): Promise<Response> =>{
     const carpetas = await Carpetas.find({owner:req.body.owner})
     if (!carpetas) {
         return res.status(400).json({msg:"el usuario no existe"})
