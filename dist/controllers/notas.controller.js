@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shownotesinacollection = exports.AddtoColecction = exports.deleteNote = exports.editContent = exports.showDetails = exports.showNotes = exports.newNote = void 0;
+exports.shownotesinaCarpeta = exports.AddtoCarpeta = exports.deleteNote = exports.editContent = exports.showDetails = exports.showNotes = exports.newNote = void 0;
 const notas_1 = __importDefault(require("../models/notas"));
 const carpetas_1 = __importDefault(require("../models/carpetas"));
 //Crear Nota
@@ -60,7 +60,7 @@ const deleteNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     return res.status(201).json({ msg: "Nota eliminada con exito" });
 });
 exports.deleteNote = deleteNote;
-const AddtoColecction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const AddtoCarpeta = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const carpeta = yield carpetas_1.default.findOne({ nombre: req.body.nombrecarpeta });
     if (!carpeta) {
         return res.status(400).json({ msg: "la carpeta que ingreso no existe" });
@@ -68,8 +68,8 @@ const AddtoColecction = (req, res) => __awaiter(void 0, void 0, void 0, function
     yield notas_1.default.updateOne({ _id: req.body.idnota }, { carpeta: req.body.nombrecarpeta });
     return res.status(201).json({ msg: "nota agregada con exito" });
 });
-exports.AddtoColecction = AddtoColecction;
-const shownotesinacollection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.AddtoCarpeta = AddtoCarpeta;
+const shownotesinaCarpeta = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const notas = yield notas_1.default.find({ carpeta: req.body.carpeta });
     if (!notas) {
         return res.status(400).json({ msg: "La carpeta que busco no existe" });
@@ -77,4 +77,4 @@ const shownotesinacollection = (req, res) => __awaiter(void 0, void 0, void 0, f
     console.log(notas);
     return res.status(201).json(notas);
 });
-exports.shownotesinacollection = shownotesinacollection;
+exports.shownotesinaCarpeta = shownotesinaCarpeta;

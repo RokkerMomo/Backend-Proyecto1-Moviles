@@ -22,10 +22,10 @@ router.post('/shownotes', passport_1.default.authenticate('jwt', { session: fals
 router.post('/showdetails', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.showDetails);
 router.post('/edit', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.editContent);
 router.post('/delete', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.deleteNote);
-router.post('/addnote', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.AddtoColecction);
-router.post('/showcarpet', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.shownotesinacollection);
+router.post('/addnote', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.AddtoCarpeta);
+router.post('/showCarpeta', passport_1.default.authenticate('jwt', { session: false }), notas_controller_1.shownotesinaCarpeta);
 //enpoints para carpetas
 router.post('/newcarpet', passport_1.default.authenticate('jwt', { session: false }), carpetas_controller_1.newCarpeta);
-router.post('/showcolecction', passport_1.default.authenticate('jwt', { session: false }), carpetas_controller_1.showcolecction);
-router.post('/deletecollection', passport_1.default.authenticate('jwt', { session: false }), carpetas_controller_1.deletecollection);
+router.post('/showCarpetas', passport_1.default.authenticate('jwt', { session: false }), carpetas_controller_1.showCarpetas);
+router.post('/deleteCarpeta', passport_1.default.authenticate('jwt', { session: false }), carpetas_controller_1.deleteCarpeta);
 exports.default = router;
